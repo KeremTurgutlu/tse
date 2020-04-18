@@ -1,3 +1,11 @@
+# package specific extra ignores
+data/
+squad_data/
+tokenizers/
+images/
+
+
+# top
 *.bak
 .gitattributes
 .last_checked

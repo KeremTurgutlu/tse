@@ -1,0 +1,14 @@
+name: tse
+channels:
+- defaults
+dependencies:
+- python
+- nb_conda
+- pip
+- pip:
+    - jupyter
+    - fastai
+    - transformers
+    - tokenizers==0.7.0
+    - nbdev
+    - scikit-learn
