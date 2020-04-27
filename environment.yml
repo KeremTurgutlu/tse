@@ -8,7 +8,7 @@ dependencies:
 - pip:
     - jupyter
     - fastai
-    - transformers
+    - transformers==2.7.0
     - tokenizers==0.7.0
     - nbdev
     - scikit-learn

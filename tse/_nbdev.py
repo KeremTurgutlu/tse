@@ -7,6 +7,7 @@ index = {"get_answer_start": "01-squad-utils.ipynb",
          "create_squad_from_df": "01-squad-utils.ipynb",
          "save_dict_as_json": "01-squad-utils.ipynb",
          "read_json_as_dict": "01-squad-utils.ipynb",
+         "init_roberta_tokenizer": "02-tokenizers.ipynb",
          "squad_processor": "02-tokenizers.ipynb",
          "get_squad_dataset": "02-tokenizers.ipynb",
          "MAX_SEQ_LEN": "02-tokenizers.ipynb",
@@ -14,16 +15,26 @@ index = {"get_answer_start": "01-squad-utils.ipynb",
          "DOC_STRIDE": "02-tokenizers.ipynb",
          "find_best_start_end_idxs": "02-tokenizers.ipynb",
          "answer_from_orig_context": "02-tokenizers.ipynb",
-         "SQUAD_DATA_PATH": "03-datasets.ipynb",
-         "PRETRAINED_TOK_PATH": "03-datasets.ipynb",
+         "get_start_end_idxs": "03-datasets.ipynb",
+         "get_start_end_tok_idxs": "03-datasets.ipynb",
+         "QAInputGenerator": "03-datasets.ipynb",
          "TSEDataAugmentor": "03-datasets.ipynb",
-         "SQUAD_Dataset": "03-datasets.ipynb",
-         "get_fold_ds": "03-datasets.ipynb",
-         "predict_answer_text": "03-datasets.ipynb"}
+         "do_tfms": "04-models.ipynb",
+         "TSEDataset": "03-datasets.ipynb",
+         "predict_answer_text": "03-datasets.ipynb",
+         "get_roberta_model": "04-models.ipynb",
+         "QAHead": "04-models.ipynb",
+         "TSEModel": "04-models.ipynb",
+         "CELoss": "04-models.ipynb",
+         "jaccard": "04-models.ipynb",
+         "get_best_start_end_idxs": "04-models.ipynb",
+         "JaccardScore": "04-models.ipynb",
+         "model_split_func": "04-models.ipynb"}
 
 modules = ["squad_utils.py",
            "tokenizers.py",
-           "datasets.py"]
+           "datasets.py",
+           "models.py"]
 
 doc_url = "https://fastai.github.io/tse/"
 
