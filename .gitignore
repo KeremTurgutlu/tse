@@ -4,7 +4,7 @@ squad_data/
 tokenizers/
 images/
 roberta-base/
-
+models/
 
 # top
 *.bak

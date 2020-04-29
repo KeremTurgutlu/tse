@@ -28,20 +28,23 @@ def get_start_end_tok_idxs(offsets, start_idx, end_idx):
 
 # Cell
 class QAInputGenerator:
-    def __init__(self, contexts, questions, answers=None, tokenizer=None):
+    def __init__(self, contexts, questions, text_ids=None, answers=None, tokenizer=None):
         self.contexts, self.questions, self.answers = contexts, questions, answers
         self.outputs = tokenizer.encode_batch(list(tuple(zip(questions, contexts))))
+        if text_ids is not None: self.text_ids = text_ids
         if self.answers is not None:
             self.start_end_idxs = [get_start_end_idxs(s1,s2) for (s1,s2) in zip(self.contexts, self.answers)]
 
 
     @classmethod
-    def from_df(cls, df, ctx_col='text', q_col='sentiment', ans_col='selected_text',
+    def from_df(cls, df,
+                ctx_col='text', q_col='sentiment', id_col='textID', ans_col='selected_text',
                 is_test=False, tokenizer=None):
         contexts = df[ctx_col].values
         questions = df[q_col].values
+        text_ids = None if id_col is None else df[id_col].values
         answers = None if is_test else df[ans_col].values
-        return cls(contexts, questions, answers, tokenizer)
+        return cls(contexts, questions, text_ids, answers, tokenizer)
 
 
     def __getitem__(self, i):
@@ -58,6 +61,10 @@ class QAInputGenerator:
             start_tok_idx, end_tok_idx = get_start_end_tok_idxs(offsets, *self.start_end_idxs[i])
             res["answer_text"] = answer_text
             res["start_end_tok_idxs"] = (start_tok_idx, end_tok_idx)
+
+        if self.text_ids is not None:
+            text_id = self.text_ids[i]
+            res["text_id"] = text_id
 
         return res
 
