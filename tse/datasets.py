@@ -5,6 +5,7 @@ __all__ = ['get_start_end_idxs', 'get_start_end_tok_idxs', 'QAInputGenerator', '
 
 # Cell
 from fastai.text import *
+from .preprocessing import *
 from .tokenizers import *
 
 # Cell
