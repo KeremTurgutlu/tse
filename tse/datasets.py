@@ -213,22 +213,22 @@ do_tfms = {}
 do_tfms["random_left_truncate"] = {"p":.3}
 do_tfms["random_right_truncate"] = {"p":.3}
 do_tfms["random_replace_with_mask"] = {"p":.3, "mask_p":0.2}
+do_tfms["random_replace_with_pseudo"] = {"p":.3}
 do_tfms
 
 # Cell
 class TSEDataset(Dataset):
-    def __init__(self, inputs, tokenizer=None, is_test=False, do_tfms:Dict=None):
+    def __init__(self, inputs, tokenizer=None, is_test=False, do_tfms:Dict=None, pseudo_inputs=None):
 
         # eval
         self.inputs = inputs
-#         answer_text = train_inputs[i]['answer_text']
-#         context_text = train_inputs[i]['context_text']
-#         offsets = train_inputs[i]['offsets']
+
         # augmentation
         self.is_test = is_test
         self.tokenizer = tokenizer
         self.do_tfms = do_tfms
-
+        self.pseudo_inputs = pseudo_inputs
+        if self.pseudo_inputs: self.pseudo_idxs = list(range(len(self.pseudo_inputs)))
 
     def __getitem__(self, i):
         'fastai requires (xb, yb) to return'
@@ -241,19 +241,30 @@ class TSEDataset(Dataset):
             start_position, end_position = tensor(start_position), tensor(end_position)
 
             if self.do_tfms:
-                augmentor = TSEDataAugmentor(self.tokenizer, input_ids,
-                                             attention_mask, start_position, end_position)
+                if self.pseudo_inputs and (np.random.uniform() < self.do_tfms["random_replace_with_pseudo"]["p"]):
+                    rand_idx = np.random.choice(self.pseudo_idxs)
 
-                if np.random.uniform() < self.do_tfms["random_left_truncate"]["p"]:
-                    augmentor.random_left_truncate()
-                if np.random.uniform() < self.do_tfms["random_right_truncate"]["p"]:
-                    augmentor.random_right_truncate()
-                if np.random.uniform() < self.do_tfms["random_replace_with_mask"]["p"]:
-                    augmentor.random_replace_with_mask(self.do_tfms["random_replace_with_mask"]["mask_p"])
+                    input_ids = tensor(self.pseudo_inputs[rand_idx]['input_ids'])
+                    attention_mask = tensor(self.pseudo_inputs[rand_idx]['attention_mask'])
+                    start_position, end_position = self.pseudo_inputs[i]['start_end_tok_idxs']
+                    start_position, end_position = tensor(start_position), tensor(end_position)
 
-                input_ids = augmentor.input_ids
-                attention_mask = augmentor.attention_mask
-                start_position, end_position = tensor(augmentor.ans_start_pos), tensor(augmentor.ans_end_pos)
+                else:
+                    augmentor = TSEDataAugmentor(self.tokenizer,
+                             input_ids,
+                             attention_mask,
+                             start_position, end_position)
+
+                    if np.random.uniform() < self.do_tfms["random_left_truncate"]["p"]:
+                        augmentor.random_left_truncate()
+                    if np.random.uniform() < self.do_tfms["random_right_truncate"]["p"]:
+                        augmentor.random_right_truncate()
+                    if np.random.uniform() < self.do_tfms["random_replace_with_mask"]["p"]:
+                        augmentor.random_replace_with_mask(self.do_tfms["random_replace_with_mask"]["mask_p"])
+
+                    input_ids = augmentor.input_ids
+                    attention_mask = augmentor.attention_mask
+                    start_position, end_position = tensor(augmentor.ans_start_pos), tensor(augmentor.ans_end_pos)
 
 
         xb = (input_ids, attention_mask)
